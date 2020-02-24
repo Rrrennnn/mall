@@ -14,6 +14,7 @@
     </scroll>
     <detail-bottom-bar @addToCart="addToCart" />
     <back-top @click.native="topClick" v-show="isShowBack" />
+    <!-- <toast :message="message" :show="show" /> -->
   </div>
 </template>
 
@@ -30,6 +31,7 @@ import DetailBottomBar from "./childComps/DetailBottomBar"
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList"
 import BackTop from "components/content/backTop/BackTop"
+import Toast from "components/common/toast/Toast"
 
 import { getDetail, getRecommend, Goods, Shop, GoodsParam } from "network/detail";
 
@@ -47,7 +49,8 @@ export default {
     DetailBottomBar,
     Scroll,
     GoodsList,
-    BackTop
+    BackTop,
+    Toast
   },
   data() {
     return {
@@ -62,7 +65,9 @@ export default {
       themeTopYs:[],
       getThemeTopYs:null,
       currentIndex:0,
-      isShowBack:false
+      isShowBack:false,
+      // show:false,
+      // message:''
     };
   },
   created() {
@@ -168,7 +173,19 @@ export default {
       product.price = this.goods.nowPrice;
       product.iid = this.iid;
       //2.添加到store中
-      this.$store.dispatch('addCart',product);
+      this.$store.dispatch('addCart',product).then(res => {
+       // 普通方式封装toast
+       // this.show = true;
+        // this.message = res;
+
+        // setTimeout(() => {
+        //   this.show = false;
+        //   this.message = ''
+        // },1500)
+
+        // 插件方式封装toast
+        this.$toast.show(res,2000)
+      })
     }
   }
 };
